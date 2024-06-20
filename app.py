@@ -6,6 +6,7 @@ from view.view import View
 
 # Call Managers
 from call_managers.stub.call_stub import CallStub
+from call_managers.whisper_call_manager import WhisperCallManager
 
 # Chat Processors
 from chat_processors.stub.emotion_stub import EmotionStub
@@ -33,7 +34,8 @@ class Controller:
         self.root.mainloop()
 
     def handle_start_call(self):
-        self.call_manager = CallStub(lambda call_log: self.model.add_call_log(call_log)) # To Replace
+        #self.call_manager = CallStub(lambda call_log: self.model.add_call_log(call_log)) # To Replace
+        self.call_manager = WhisperCallManager(lambda call_log: self.model.add_call_log(call_log))
         self.call_manager_thread = threading.Thread(target=self.call_manager.start_call)
         self.call_manager_thread.start()
 
