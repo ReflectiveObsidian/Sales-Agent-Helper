@@ -27,7 +27,7 @@ class WhisperCallManager(CallManager):
         device = "cuda"
         compute_type = "auto"
         threads = 0
-        energy_threshold = 10000
+        energy_threshold = 1000
         self.record_timeout = 2
         self.phrase_timeout = 2
 
