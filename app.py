@@ -11,6 +11,7 @@ from call_managers.whisper_call_manager import WhisperCallManager
 # Chat Processors
 from chat_processors.stub.emotion_stub import EmotionStub
 from chat_processors.text2emotion_chat_processor import Text2EmotionChatProcessor
+from chat_processors.text2MBTI_chat_processor import Text2MBTIChatProcessor
 
 class Controller:
     def __init__(self):
@@ -23,6 +24,10 @@ class Controller:
         self.emotion_processor = Text2EmotionChatProcessor(lambda emotion: self.model.set_emotion(emotion))
         emotion_processor_callback = self.emotion_processor.get_callback()
         self.model.set_call_log_observer(emotion_processor_callback)
+
+        self.personalities_processor = Text2MBTIChatProcessor(lambda personalities: self.model.set_personalities(personalities))
+        personalities_processor_callback = self.personalities_processor.get_callback()
+        self.model.set_call_log_observer(personalities_processor_callback)
         
         # Configure the grid to expand with the window
         for i in range(5):
