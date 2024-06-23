@@ -1,2 +1,4 @@
 text2emotion
 emoji==1.6.3
+speechrecognition
+faster_whisper
