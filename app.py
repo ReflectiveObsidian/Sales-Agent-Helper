@@ -39,6 +39,8 @@ class Controller:
         self.root.mainloop()
 
     def handle_start_call(self):
+        self.model.initialise()
+
         #self.call_manager = CallStub(lambda call_log: self.model.add_call_log(call_log)) # To Replace
         self.call_manager = WhisperCallManager(lambda call_log: self.model.add_call_log(call_log))
         self.call_manager_thread = threading.Thread(target=self.call_manager.start_call)
