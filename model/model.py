@@ -3,10 +3,7 @@ class Model:
         self.view = view
         self.call_logs_observers = []
 
-        self.call_logs = []
-        self.emotion = [""]
-        self.personalities = [""]
-        self.warnings = [""]
+        self.initialise()
 
     def set_call_log_observer(self, observer):
         self.call_logs_observers.append(observer)
@@ -47,6 +44,21 @@ class Model:
     
     def set_warnings(self, warnings):
         self.warnings = warnings
+        self.__update_view()
+
+    def get_todo_list(self):
+        return self.todo_list
+    
+    def set_todo_list(self, todo):
+        self.todo_list = todo
+        self.__update_view()
+
+    def initialise(self):
+        self.call_logs = []
+        self.emotion = ["waiting..."]
+        self.personalities = ["waiting..."]
+        self.warnings = [""]
+        self.todo_list = "Generating..."
         self.__update_view()
 
     def __update_view(self):
