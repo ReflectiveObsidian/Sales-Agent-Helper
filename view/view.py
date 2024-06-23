@@ -39,15 +39,21 @@ class View:
         self.button_frame = tk.Frame(self.frame)
         self.button_frame.pack(padx=10, pady=10)
 
-        self.button = tk.Button(self.button_frame, bg='#99FF99', text="Start Call", command=self.controller.handle_start_call)
-        self.button.grid(row=0, column=0, padx=10, pady=10)
+        self.start_button = tk.Button(self.button_frame, bg='#99FF99', text="Start Call", command=self.handle_start_call)
+        self.start_button.grid(row=0, column=0, padx=10, pady=10)
 
-        self.end_button = tk.Button(self.button_frame, bg='#FF9999', text="End Call", command=self.controller.handle_end_call)
+        self.end_button = tk.Button(self.button_frame, bg='#FF9999', text="End Call and show To-Do", state="disabled", command=self.handle_end_call)
         self.end_button.grid(row=0, column=1, padx=10, pady=10)
 
-        tk.Button(self.frame, text='Go to Page 1',
-                  command=self.go_to_call_done_view).pack()
-
+    def handle_start_call(self):
+        self.controller.handle_start_call()
+        self.start_button.config(state="disabled")
+        self.end_button.config(state="normal")
+        
+    def handle_end_call(self):
+        self.start_button.config(state="normal")
+        self.go_to_call_done_view()
+        self.controller.handle_end_call()
 
     def update(self, model):
         self.call_logs.delete('1.0', tk.END)
