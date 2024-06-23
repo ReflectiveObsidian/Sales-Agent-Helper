@@ -1,6 +1,7 @@
 import threading
 import tkinter as tk
 
+from llm_chat_processors.prompt_type import PromptType
 from model.model import Model
 from view.view import View
 
@@ -12,6 +13,9 @@ from call_managers.whisper_call_manager import WhisperCallManager
 from chat_processors.stub.emotion_stub import EmotionStub
 from chat_processors.text2emotion_chat_processor import Text2EmotionChatProcessor
 from chat_processors.text2MBTI_chat_processor import Text2MBTIChatProcessor
+
+# LLM Chat Processors
+from llm_chat_processors.stub.llm_chat_processor_stub import LLMChatProcessorStub
 
 class Controller:
     def __init__(self):
@@ -28,6 +32,10 @@ class Controller:
         self.personalities_processor = Text2MBTIChatProcessor(lambda personalities: self.model.set_personalities(personalities))
         personalities_processor_callback = self.personalities_processor.get_callback()
         self.model.set_call_log_observer(personalities_processor_callback)
+
+        self.llm_chat_processor = LLMChatProcessorStub()
+        llm_chat_processor_callback = self.llm_chat_processor.chatlog_update_listener
+        self.model.set_call_log_observer(llm_chat_processor_callback)
         
         # Configure the grid to expand with the window
         for i in range(5):
@@ -51,6 +59,11 @@ class Controller:
             self.call_manager.end_call()
             self.call_manager_thread.join()
             self.call_manager = None
+        
+
+        self.llm_chat_processor.set_prompt(PromptType.TODO, self.model, lambda todo: self.model.set_todo_list(todo), True)
+        self.llm_chat_processor_thread = threading.Thread(target=self.llm_chat_processor.run)
+        self.llm_chat_processor_thread.start()
         
 if __name__ == "__main__":
     app = Controller()

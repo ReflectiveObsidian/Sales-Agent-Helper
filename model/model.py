@@ -47,13 +47,18 @@ class Model:
         self.__update_view()
 
     def get_todo_list(self):
-        return 'todo the todo'
+        return self.todo_list
+    
+    def set_todo_list(self, todo):
+        self.todo_list = todo
+        self.__update_view()
 
     def initialise(self):
         self.call_logs = []
-        self.emotion = [""]
-        self.personalities = [""]
+        self.emotion = ["waiting..."]
+        self.personalities = ["waiting..."]
         self.warnings = [""]
+        self.todo_list = "Generating..."
         self.__update_view()
 
     def __update_view(self):

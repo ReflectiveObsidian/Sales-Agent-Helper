@@ -13,3 +13,7 @@ class ChatProcessor(ABC):
     @abstractmethod
     def process_chat(self, chat_log: List[CallLog]) -> List[str]:
         pass
+
+    @abstractmethod
+    def get_callback(self):
+        pass
