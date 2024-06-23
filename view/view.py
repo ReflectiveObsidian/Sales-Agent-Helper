@@ -39,7 +39,7 @@ class View:
         self.button_frame = tk.Frame(self.frame)
         self.button_frame.pack(padx=10, pady=10)
 
-        self.start_button = tk.Button(self.button_frame, bg='#99FF99', text="Start Call", command=self.handle_start_call)
+        self.start_button = tk.Button(self.button_frame, bg='#99FF99', text="Start New Call", command=self.handle_start_call)
         self.start_button.grid(row=0, column=0, padx=10, pady=10)
 
         self.end_button = tk.Button(self.button_frame, bg='#FF9999', text="End Call and show To-Do", state="disabled", command=self.handle_end_call)
