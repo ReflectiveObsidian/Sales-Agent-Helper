@@ -14,14 +14,14 @@ class LLMChatProcessorStub(LLMChatProcessor):
         self.enabled = False
         # Load LLM into memory here
 
-    def set_prompt(self, type: PromptType, model, model_callback, enabled):
+    def set_prompt(self, type: PromptType, chatlog, model_callback, enabled):
         self.model_callback = model_callback
         self.type = type
-        self.chat_log = model.get_call_logs()
+        self.chat_log = chatlog
         self.enabled = enabled
 
-    def chatlog_update_listener(self, model):
-        self.chat_log = model.get_call_logs()
+    def chatlog_update_listener(self, chatlog):
+        self.chat_log = chatlog
         if self.enabled:
             self.run()
 

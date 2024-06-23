@@ -33,5 +33,7 @@ class CallDoneView:
         self.todo_list.delete('1.0', tk.END)
         self.todo_list.insert('insert', model.get_todo_list())
 
+        print("Updated Call Done View, todo list: ", model.get_todo_list() )
+
     def formatted_call_logs(self, call_logs):
         return "\n\n".join([str(call_log) for call_log in call_logs])
