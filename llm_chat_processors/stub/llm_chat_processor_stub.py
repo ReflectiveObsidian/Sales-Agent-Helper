@@ -12,13 +12,15 @@ class LLMChatProcessorStub(LLMChatProcessor):
     def __init__(self):
         self.active = False
         self.enabled = False
-        # Load LLM into memory here
+        # Load LLM into memory here -----------------------------------
+
+        # -------------------------------------------------------------
 
     def set_prompt(self, type: PromptType, chatlog, model_callback, enabled):
-        self.model_callback = model_callback
-        self.type = type
-        self.chat_log = chatlog
-        self.enabled = enabled
+        self.model_callback = model_callback # Call this function to update the model with your response
+        self.type = type # Use this in run() to determine what prompt to give to the llm
+        self.chat_log = chatlog # List of ChatLog
+        self.enabled = enabled # If enabled, llm will be prompted on chatlog update
 
     def chatlog_update_listener(self, chatlog):
         self.chat_log = chatlog
@@ -34,9 +36,19 @@ class LLMChatProcessorStub(LLMChatProcessor):
     def run(self):
         if not self.active:
             self.active = True
-            # Prompt LLM and get response here
+            model_callback = self.model_callback
+            type = self.type
+            chat_log = self.chat_log
+            enabled = self.enabled
+
+            # PROMPT LLM HERE -----------------------------------
             # Choose prompt based on self.type
             sleep(5)
-            self.model_callback("Hello")
+            if type == PromptType.WARNINGS:
+                model_callback("Hello Warning")
+            elif type == PromptType.TODO:
+                model_callback("Hello Todo")
+            # --------------------------------------------------
+
             self.active = False
 

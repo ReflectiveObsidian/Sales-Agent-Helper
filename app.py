@@ -33,8 +33,8 @@ class Controller:
         personalities_processor_callback = self.personalities_processor.get_callback()
         self.model.set_call_log_observer(personalities_processor_callback)
 
-        self.llm_chat_processor = LLMChatProcessorStub()
-        llm_chat_processor_callback = self.llm_chat_processor.chatlog_update_listener
+        self.llm_chat_processor = LLMChatProcessorStub() # Comment out and change stub to actual
+        llm_chat_processor_callback = lambda calllog: threading.Thread(target=self.llm_chat_processor.chatlog_update_listener(calllog)).start()
         self.model.set_call_log_observer(llm_chat_processor_callback)
         
         # Configure the grid to expand with the window
@@ -54,13 +54,14 @@ class Controller:
         self.call_manager_thread = threading.Thread(target=self.call_manager.start_call)
         self.call_manager_thread.start()
 
+        self.llm_chat_processor.set_prompt(PromptType.WARNINGS, self.model.get_call_logs(), lambda todo: self.model.set_warnings(todo), True)
+
     def handle_end_call(self):
         if self.call_manager is not None:
             self.call_manager.end_call()
             self.call_manager_thread.join()
             self.call_manager = None
         
-
         self.llm_chat_processor.set_prompt(PromptType.TODO, self.model.get_call_logs(), lambda todo: self.model.set_todo_list(todo), False)
         self.llm_chat_processor_thread = threading.Thread(target=self.llm_chat_processor.run)
         self.llm_chat_processor_thread.start()
