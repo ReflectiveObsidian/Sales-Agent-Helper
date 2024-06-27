@@ -58,6 +58,7 @@ class CallStub(CallManager):
                     speaker = 'Mink'
                     mink_content_id = 0
                     badger_content_id = 0
+                    sleep(10)
             else:
                 speaker = 'Mink'
                 badger_content_id += 1
@@ -65,8 +66,9 @@ class CallStub(CallManager):
                     speaker = 'Badger'
                     badger_content_id = 0
                     mink_content_id = 0
+                    sleep(10)
 
-            sleep(2)
+            sleep(1.5)
 
             
 
