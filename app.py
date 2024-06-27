@@ -5,6 +5,10 @@ from llm_chat_processors.prompt_type import PromptType
 from model.model import Model
 from view.view import View
 
+# LLM Chat Processors
+from llm_chat_processors.stub.llm_chat_processor_stub import LLMChatProcessorStub
+from llm_chat_processors.non_finetuned_llm_chat_processor import NonFinetunedLLMChatProcessor
+
 # Call Managers
 from call_managers.stub.call_stub import CallStub
 from call_managers.whisper_call_manager import WhisperCallManager
@@ -13,10 +17,6 @@ from call_managers.whisper_call_manager import WhisperCallManager
 from chat_processors.stub.emotion_stub import EmotionStub
 from chat_processors.text2emotion_chat_processor import Text2EmotionChatProcessor
 from chat_processors.text2MBTI_chat_processor import Text2MBTIChatProcessor
-
-# LLM Chat Processors
-from llm_chat_processors.stub.llm_chat_processor_stub import LLMChatProcessorStub
-from llm_chat_processors.non_finetuned_llm_chat_processor import NonFinetunedLLMChatProcessor
 
 class Controller:
     def __init__(self):
