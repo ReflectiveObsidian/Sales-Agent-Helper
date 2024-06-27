@@ -39,8 +39,8 @@ class Controller:
         llm_chat_processor_callback = lambda calllog: threading.Thread(target=self.llm_chat_processor.chatlog_update_listener, args=[calllog]).start()
         self.model.set_call_log_observer(llm_chat_processor_callback)
 
-        self.call_manager = CallStub(lambda call_log: self.model.add_call_log(call_log)) # To Replace
-        #self.call_manager = WhisperCallManager(lambda call_log: self.model.add_call_log(call_log))
+        #self.call_manager = CallStub(lambda call_log: self.model.add_call_log(call_log)) # To Replace
+        self.call_manager = WhisperCallManager(lambda call_log: self.model.add_call_log(call_log))
         
         # Configure the grid to expand with the window
         for i in range(5):
