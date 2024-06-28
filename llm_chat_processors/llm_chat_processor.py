@@ -19,3 +19,15 @@ class LLMChatProcessor(ABC):
     @abstractmethod
     def chatlog_update_listener(self, model):
         pass
+
+    @abstractmethod
+    def enable(self):
+        pass
+
+    @abstractmethod
+    def disable(self):
+        pass
+
+    @abstractmethod
+    def run(self):
+        pass

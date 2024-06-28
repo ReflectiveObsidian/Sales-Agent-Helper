@@ -2,3 +2,4 @@ text2emotion
 emoji==1.6.3
 speechrecognition
 faster_whisper
+llama-cpp-python # compile for GPU inference
