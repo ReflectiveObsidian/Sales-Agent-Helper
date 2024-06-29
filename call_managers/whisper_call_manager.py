@@ -108,11 +108,12 @@ class WhisperCallManager(CallManager):
 
     def start_call(self):
         self.inCall = True
-
+        print("Starting call")
         self.sources = [sr.Microphone(sample_rate=16000, device_index=self.salesperson_device_id_callback()),
                         sr.Microphone(sample_rate=16000, device_index=self.customer_device_id_callback())]
-        
+        print("Sources created")
         for source in self.sources:
+            print("Adjusting for ambient noise")
             with source:
                 try:
                     self.recorder[self.sources.index(source)].adjust_for_ambient_noise(source, duration=1)
@@ -120,17 +121,21 @@ class WhisperCallManager(CallManager):
                     print(f"Error adjusting for ambient noise: {e}")
                     self.controller.handle_end_call()
                     return
+        print("Ambient noise adjusted")
         # Start threads for each device
         threads = []
         for i in range(2):
+            print(f"Starting call for device {i+1}")
             # Start recording and transcription in separate threads
             thread = Thread(target=self.record_and_transcribe, args=(i,))
             thread.start()
             threads.append(thread)
             
+            print(f"Recording for device {i+1}")
+            
             # Listen in background for each device
             self.recorder[i].listen_in_background(self.sources[i], self.record_callback(i), phrase_time_limit=self.record_timeout)
-
+        print("Listening in background")
         # Wait for threads to finish
         for thread in threads:
             thread.join()
