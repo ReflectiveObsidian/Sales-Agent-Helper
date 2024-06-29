@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 class CallManager:
     @abstractmethod
-    def __init__(self, add_call_log):
+    def __init__(self, add_call_log, salesperson_device_id_callback, customer_device_id_callback):
         pass
 
     @abstractmethod

@@ -30,6 +30,7 @@ class Controller:
         emotion_processor_callback = self.emotion_processor.get_callback()
         self.model.set_call_log_observer(emotion_processor_callback)
 
+        #self.personalities_processor = EmotionStub(lambda personalities: self.model.set_personalities(personalities))
         self.personalities_processor = Text2MBTIChatProcessor(lambda personalities: self.model.set_personalities(personalities))
         personalities_processor_callback = self.personalities_processor.get_callback()
         self.model.set_call_log_observer(personalities_processor_callback)
@@ -39,8 +40,16 @@ class Controller:
         llm_chat_processor_callback = lambda calllog: threading.Thread(target=self.llm_chat_processor.chatlog_update_listener, args=[calllog]).start()
         self.model.set_call_log_observer(llm_chat_processor_callback)
 
-        #self.call_manager = CallStub(lambda call_log: self.model.add_call_log(call_log)) # To Replace
-        self.call_manager = WhisperCallManager(lambda call_log: self.model.add_call_log(call_log))
+        salesperson_device_id_callback = lambda: self.model.get_salesperson_sound_device_id()
+        customer_device_id_callback = lambda: self.model.get_customer_sound_device_id()
+        self.call_manager = CallStub(
+            lambda call_log: self.model.add_call_log(call_log),
+            salesperson_device_id_callback,
+            customer_device_id_callback) # To Replace
+        '''self.call_manager = WhisperCallManager(
+            lambda call_log: self.model.add_call_log(call_log),
+            salesperson_device_id_callback,
+            customer_device_id_callback)'''
         
         # Configure the grid to expand with the window
         for i in range(5):

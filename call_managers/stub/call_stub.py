@@ -8,10 +8,12 @@ from model.call_log import CallLog
 
 
 class CallStub(CallManager):
-    def __init__(self, add_call_log_callback):
+    def __init__(self, add_call_log_callback, salesperson_device_id_callback, customer_device_id_callback):
         # add_call_log_callback is a function that takes a CallLog object as an argument
         # This updates the model with the new call log
         self.add_call_log_callback = add_call_log_callback
+        self.salesperson_device_id_callback = salesperson_device_id_callback
+        self.customer_device_id_callback = customer_device_id_callback
         self.inCall = False
 
     def start_call(self):

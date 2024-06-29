@@ -19,8 +19,10 @@ from model.call_log import CallLog
 
 
 class WhisperCallManager(CallManager):
-    def __init__(self, add_call_log_callback):
+    def __init__(self, add_call_log_callback, salesperson_device_id_callback, customer_device_id_callback):
         self.add_call_log_callback = add_call_log_callback
+        self.salesperson_device_id_callback = salesperson_device_id_callback
+        self.customer_device_id_callback = customer_device_id_callback
         self.inCall = False
 
         model = "medium.en"
@@ -38,19 +40,12 @@ class WhisperCallManager(CallManager):
         for r in self.recorder:
             r.energy_threshold = energy_threshold
             r.dynamic_energy_threshold = False
-
-        self.sources = [sr.Microphone(sample_rate=16000, device_index=1),
-                        sr.Microphone(sample_rate=16000, device_index=2)]
         
         nltk.download('punkt')
         self.audio_model = WhisperModel(model, device=device, compute_type=compute_type, cpu_threads=threads)
 
         self.temp_files = [NamedTemporaryFile().name, NamedTemporaryFile().name]
         self.transcriptions = [[''], ['']]
-
-        for source in self.sources:
-            with source:
-                self.recorder[self.sources.index(source)].adjust_for_ambient_noise(source, duration=1)
 
     def record_callback(self, index):
         def callback(_, audio: sr.AudioData):
@@ -113,7 +108,18 @@ class WhisperCallManager(CallManager):
 
     def start_call(self):
         self.inCall = True
+
+        self.sources = [sr.Microphone(sample_rate=16000, device_index=self.salesperson_device_id_callback()),
+                        sr.Microphone(sample_rate=16000, device_index=self.customer_device_id_callback())]
         
+        for source in self.sources:
+            with source:
+                try:
+                    self.recorder[self.sources.index(source)].adjust_for_ambient_noise(source, duration=1)
+                except Exception as e:
+                    print(f"Error adjusting for ambient noise: {e}")
+                    self.controller.handle_end_call()
+                    return
         # Start threads for each device
         threads = []
         for i in range(2):
