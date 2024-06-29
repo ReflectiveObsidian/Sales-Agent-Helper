@@ -67,6 +67,12 @@ class Controller:
         self.llm_chat_processor.set_prompt(PromptType.TODO, self.model.get_call_logs(), lambda todo: self.model.set_todo_list(todo), False)
         self.llm_chat_processor_thread = threading.Thread(target=self.llm_chat_processor.run)
         self.llm_chat_processor_thread.start()
+
+    def handle_salesperson_device_selected(self, device_id):
+        self.model.set_salesperson_sound_device_id(device_id)
+
+    def handle_customer_device_selected(self, device_id):
+        self.model.set_customer_sound_device_id(device_id)
         
 if __name__ == "__main__":
     app = Controller()
