@@ -2,8 +2,22 @@ class Model:
     def __init__(self, view):
         self.view = view
         self.call_logs_observers = []
+        self.salesperson_sound_device_id = 0
+        self.customer_sound_device_id = 0
 
         self.initialise()
+
+    def set_salesperson_sound_device_id(self, device_id):
+        self.salesperson_sound_device_id = device_id
+
+    def get_salesperson_sound_device_id(self):
+        return self.salesperson_sound_device_id
+    
+    def set_customer_sound_device_id(self, device_id):
+        self.customer_sound_device_id = device_id
+
+    def get_customer_sound_device_id(self):
+        return self.customer_sound_device_id
 
     def set_call_log_observer(self, observer):
         self.call_logs_observers.append(observer)
