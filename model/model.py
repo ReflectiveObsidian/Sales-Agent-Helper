@@ -9,12 +9,14 @@ class Model:
 
     def set_salesperson_sound_device_id(self, device_id):
         self.salesperson_sound_device_id = device_id
+        self.__update_view()
 
     def get_salesperson_sound_device_id(self):
         return self.salesperson_sound_device_id
     
     def set_customer_sound_device_id(self, device_id):
         self.customer_sound_device_id = device_id
+        self.__update_view()
 
     def get_customer_sound_device_id(self):
         return self.customer_sound_device_id
