@@ -4,6 +4,7 @@ import speech_recognition as sr
 import nltk
 from nltk.tokenize import sent_tokenize
 from threading import Thread
+import multiprocessing as mp
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
@@ -123,21 +124,19 @@ class WhisperCallManager(CallManager):
                     return
         print("Ambient noise adjusted")
         # Start threads for each device
-        threads = []
-        for i in range(1):
+        processes = []
+        for i in range(2):
             print(f"Starting call for device {i+1}")
-            # Start recording and transcription in separate threads
-            thread = Thread(target=self.record_and_transcribe, args=(i,))
-            thread.start()
-            threads.append(thread)
-            
+            process = mp.Process(target=self.record_and_transcribe, args=(self, i))
+            process.start()
+            processes.append(process)
             print(f"Recording for device {i+1}")
-            
-            # Listen in background for each device
+
             self.recorder[i].listen_in_background(self.sources[i], self.record_callback(i), phrase_time_limit=self.record_timeout)
         print("Listening in background")
-        # Wait for threads to finish
-        
+
+        for process in processes:
+            process.join()
 
     def end_call(self):
         self.inCall = False
