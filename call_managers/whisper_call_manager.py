@@ -124,7 +124,7 @@ class WhisperCallManager(CallManager):
         print("Ambient noise adjusted")
         # Start threads for each device
         threads = []
-        for i in range(2):
+        for i in range(1):
             print(f"Starting call for device {i+1}")
             # Start recording and transcription in separate threads
             thread = Thread(target=self.record_and_transcribe, args=(i,))
@@ -137,8 +137,7 @@ class WhisperCallManager(CallManager):
             self.recorder[i].listen_in_background(self.sources[i], self.record_callback(i), phrase_time_limit=self.record_timeout)
         print("Listening in background")
         # Wait for threads to finish
-        for thread in threads:
-            thread.join()
+        
 
     def end_call(self):
         self.inCall = False

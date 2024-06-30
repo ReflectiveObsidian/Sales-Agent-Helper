@@ -13,7 +13,7 @@ class NonFinetunedLLMChatProcessor(LLMChatProcessor):
         self.active = False
         self.enabled = False
         # Load LLM into memory here -----------------------------------
-        model_path = "llm_chat_processors\llm_models\Phi-3-mini-4k-instruct-q4.gguf"
+        model_path = "llm_chat_processors/llm_models/Phi-3-mini-4k-instruct-q4.gguf"
         model_kwargs = {
                 "n_ctx":4096,    # Context length to use
                 "n_threads":4,   # Number of CPU threads to use
@@ -24,6 +24,7 @@ class NonFinetunedLLMChatProcessor(LLMChatProcessor):
         # -------------------------------------------------------------
 
     def set_prompt(self, type: PromptType, chatlog, model_callback, enabled):
+        print("Setting prompt")
         self.model_callback = model_callback # Call this function to update the model with your response
         self.type = type # Use this in run() to determine what prompt to give to the llm
         self.chat_log = chatlog # List of ChatLog
@@ -49,6 +50,7 @@ class NonFinetunedLLMChatProcessor(LLMChatProcessor):
             )
             self.min_chat_history = 3
             self.max_chat_history = 5
+            print("prompting warnings")
         elif type == PromptType.TODO:
             generation_kwargs = {
                 "max_tokens":100000,

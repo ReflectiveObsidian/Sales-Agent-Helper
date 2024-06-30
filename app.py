@@ -65,8 +65,8 @@ class Controller:
     def handle_start_call(self):
         self.model.initialise()
 
-        self.call_manager_thread = threading.Thread(target=self.call_manager.start_call)
-        self.call_manager_thread.start()
+        #self.call_manager_thread = threading.Thread(target=self.call_manager.start_call)
+        self.call_manager.start_call()
 
         self.llm_chat_processor.set_prompt(PromptType.WARNINGS, self.model.get_call_logs(), lambda todo: self.model.set_warnings(todo), True)
 

@@ -10,15 +10,15 @@ class Text2MBTIChatProcessor(ChatProcessor):
     def __init__(self, model_callback):
         self.model_callback = model_callback
 
-        with open('./chat_processors/resources/model_EI.pkl', 'rb') as file:
+        with open('./chat_processors/resources/MBTI/model_EI.pkl', 'rb') as file:
             self.model_EI = pickle.load(file)
-        with open('./chat_processors/resources/model_FT.pkl', 'rb') as file:
+        with open('./chat_processors/resources/MBTI/model_FT.pkl', 'rb') as file:
             self.model_FT = pickle.load(file)
-        with open('./chat_processors/resources/model_JP.pkl', 'rb') as file:
+        with open('./chat_processors/resources/MBTI/model_JP.pkl', 'rb') as file:
             self.model_JP = pickle.load(file)
-        with open('./chat_processors/resources/model_NS.pkl', 'rb') as file:
+        with open('./chat_processors/resources/MBTI/model_NS.pkl', 'rb') as file:
             self.model_NS = pickle.load(file)
-        with open('./chat_processors/resources/vectorizer.pkl', 'rb') as file:
+        with open('./chat_processors/resources/MBTI/vectorizer.pkl', 'rb') as file:
             self.loaded_vectorizer = pickle.load(file)
 
     def process_chat(self, chat_logs):
