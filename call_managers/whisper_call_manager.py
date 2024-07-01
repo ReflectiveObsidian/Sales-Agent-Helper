@@ -21,17 +21,12 @@ TEMP_FILENAME2 = "temp_output2.wav"
 class WhisperCallManager(CallManager):
     def __init__(self, add_call_log_callback, salesperson_device_id_callback, customer_device_id_callback):
         self.add_call_log_callback = add_call_log_callback
-        self.device_index1 = salesperson_device_id_callback()
-        self.device_index2 = customer_device_id_callback()
+        self.salesperson_device_id_callback = salesperson_device_id_callback
+        self.customer_device_id_callback = customer_device_id_callback
         self.audio = pyaudio.PyAudio()
         self.audio_model = WhisperModel("medium.en", device="cuda", compute_type="auto", cpu_threads=0)
         
         self.in_call = False
-
-        self.stream1 = self.audio.open(format=FORMAT, channels=CHANNELS,
-                                       rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=self.device_index1)
-        self.stream2 = self.audio.open(format=FORMAT, channels=CHANNELS,
-                                       rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=self.device_index2)
         
         self.record_event1 = threading.Event()
         self.transcribe_event1 = threading.Event()
@@ -75,13 +70,24 @@ class WhisperCallManager(CallManager):
     def start_call(self):
         self.in_call = True
 
+        self.device_index1 = self.salesperson_device_id_callback()
+        self.device_index2 = self.customer_device_id_callback()
+
+        print("self.device_index1 is ", self.device_index1)
+        print("self.device_index2 is ",self.device_index2)
+
+        self.stream1 = self.audio.open(format=FORMAT, channels=CHANNELS,
+                                       rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=self.device_index1)
+        self.stream2 = self.audio.open(format=FORMAT, channels=CHANNELS,
+                                       rate=RATE, input=True, frames_per_buffer=CHUNK, input_device_index=self.device_index2)
+
         # Create threads for parallel recording and transcribing
-        thread1 = threading.Thread(target=self.record_and_transcribe, args=(self.stream1, TEMP_FILENAME1, self.record_event1, self.transcribe_event1))
-        thread2 = threading.Thread(target=self.record_and_transcribe, args=(self.stream2, TEMP_FILENAME2, self.record_event2, self.transcribe_event2))
+        self.thread1 = threading.Thread(target=self.record_and_transcribe, args=(self.stream1, TEMP_FILENAME1, self.record_event1, self.transcribe_event1))
+        self.thread2 = threading.Thread(target=self.record_and_transcribe, args=(self.stream2, TEMP_FILENAME2, self.record_event2, self.transcribe_event2))
 
         # Start threads
-        thread1.start()
-        thread2.start()
+        self.thread1.start()
+        self.thread2.start()
 
         # Set the initial recording events
         self.record_event1.set()
@@ -107,7 +113,15 @@ class WhisperCallManager(CallManager):
             self.end_call()
 
     def end_call(self):
+        thread = threading.Thread(target=self.handle_end_call)
+        thread.start()
+
+    def handle_end_call(self):
         self.in_call = False
+        print("Ending call...") 
+        self.thread1.join()
+        self.thread2.join()
+        print("Threads joined.")
         self.stream1.stop_stream()
         self.stream1.close()
         self.stream2.stop_stream()
@@ -115,6 +129,3 @@ class WhisperCallManager(CallManager):
         self.audio.terminate()
         print("All streams closed and audio interface terminated.")
 
-if __name__ == "__main__":
-    call_manager = WhisperCallManager(add_call_log_callback=None, salesperson_device_id_callback=0, customer_device_id_callback=1)
-    call_manager.start()
