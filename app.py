@@ -25,6 +25,11 @@ class Controller:
         self.model = Model(self.view)
         self.call_manager = None
 
+        #self.llm_chat_processor = LLMChatProcessorStub() # Comment out and change stub to actual
+        self.llm_chat_processor = NonFinetunedLLMChatProcessor()
+        llm_chat_processor_callback = lambda calllog: threading.Thread(target=self.llm_chat_processor.chatlog_update_listener, args=[calllog]).start()
+        self.model.set_call_log_observer(llm_chat_processor_callback)
+
         #self.emotion_processor = EmotionStub(lambda emotion: self.model.set_emotion(emotion)) # Stub
         self.emotion_processor = Text2EmotionChatProcessor(lambda emotion: self.model.set_emotion(emotion))
         emotion_processor_callback = self.emotion_processor.get_callback()
@@ -33,12 +38,7 @@ class Controller:
         #self.personalities_processor = EmotionStub(lambda personalities: self.model.set_personalities(personalities))
         self.personalities_processor = Text2MBTIChatProcessor(lambda personalities: self.model.set_personalities(personalities))
         personalities_processor_callback = self.personalities_processor.get_callback()
-        self.model.set_call_log_observer(personalities_processor_callback)
-
-        #self.llm_chat_processor = LLMChatProcessorStub() # Comment out and change stub to actual
-        self.llm_chat_processor = NonFinetunedLLMChatProcessor()
-        llm_chat_processor_callback = lambda calllog: threading.Thread(target=self.llm_chat_processor.chatlog_update_listener, args=[calllog]).start()
-        self.model.set_call_log_observer(llm_chat_processor_callback)
+        self.model.set_call_log_observer(personalities_processor_callback)        
 
         salesperson_device_id_callback = lambda: self.model.get_salesperson_sound_device_id()
         customer_device_id_callback = lambda: self.model.get_customer_sound_device_id()
