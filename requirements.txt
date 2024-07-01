@@ -3,3 +3,4 @@ emoji==1.6.3
 speechrecognition
 faster_whisper
 llama-cpp-python # compile for GPU inference
+numpy==1.26.4
